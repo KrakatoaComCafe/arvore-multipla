@@ -1,0 +1,81 @@
+# depslib dependency file v1.0
+1482150399 source:d:\documentos\2016\ed i\programas\arvore multipla 01\arvoreb.c
+	"arvoreB.h"
+
+1482150328 d:\documentos\2016\ed i\programas\arvore multipla 01\arvoreb.h
+	"filaInfo.h"
+
+1489272138 source:d:\documentos\2016\ed i\programas\arvore multipla 01\main.c
+	<time.h>
+	"trabalho2.h"
+
+1481366777 d:\documentos\2016\ed i\programas\arvore multipla 01\fila.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1481366989 source:d:\documentos\2016\ed i\programas\arvore multipla 01\fila.c
+	"fila.h"
+
+1482150255 d:\documentos\2016\ed i\programas\arvore multipla 01\filainfo.h
+	"noArquivo.h"
+
+1482147745 source:d:\documentos\2016\ed i\programas\arvore multipla 01\filaenderecos.c
+	"filaEnderecos.h"
+
+1482150432 d:\documentos\2016\ed i\programas\arvore multipla 01\filaenderecos.h
+	"arvoreB.h"
+
+1482090881 source:d:\documentos\2016\ed i\programas\arvore multipla 01\filainfo.c
+	"filaInfo.h"
+
+1482150149 source:d:\documentos\2016\ed i\programas\arvore multipla 01\noarquivo.c
+	"noArquivo.h"
+
+1482150195 d:\documentos\2016\ed i\programas\arvore multipla 01\noarquivo.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1489271594 d:\documentos\2016\ed i\programas\arvore multipla 01\trabalho2.h
+	"filaEnderecos.h"
+
+1489271300 source:d:\documentos\2016\ed i\programas\arvore multipla 01\trabalho2.c
+	"trabalho2.h"
+
+1482150399 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\arvoreb.c
+	"arvoreB.h"
+
+1482150328 e:\documentos\2016\ed i\programas 2016\arvore multipla 01\arvoreb.h
+	"filaInfo.h"
+
+1482150255 e:\documentos\2016\ed i\programas 2016\arvore multipla 01\filainfo.h
+	"noArquivo.h"
+
+1490009025 e:\documentos\2016\ed i\programas 2016\arvore multipla 01\noarquivo.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1482147745 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\filaenderecos.c
+	"filaEnderecos.h"
+
+1482150432 e:\documentos\2016\ed i\programas 2016\arvore multipla 01\filaenderecos.h
+	"arvoreB.h"
+
+1482090881 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\filainfo.c
+	"filaInfo.h"
+
+1489272546 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\main.c
+	<time.h>
+	"trabalho2.h"
+
+1489271594 e:\documentos\2016\ed i\programas 2016\arvore multipla 01\trabalho2.h
+	"filaEnderecos.h"
+
+1482150149 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\noarquivo.c
+	"noArquivo.h"
+
+1489305785 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\trabalho2.c
+	"trabalho2.h"
+
