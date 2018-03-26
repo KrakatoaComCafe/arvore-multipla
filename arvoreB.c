@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include "ui.h"
 #include "arvoreB.h"
 
 //***************************************
@@ -19,7 +21,7 @@ struct noArvoreB *iniciaNoArvoreB(int *elementos[], int numElementos)
     for(i = 0; i < NUM_ELEMENTOS; i++)
     {
         if(i >= numElementos) no->elementos[i] = 1;
-        else no->elementos[i] = elementos[i];
+        else no->elementos[i] = (int)elementos[i];
         no->filhos[i] = NULL;
     }
     no->filhos[i] = NULL;
@@ -47,7 +49,7 @@ struct noArvoreB *iniciaNoArvoreBVazio()
     no->folha = true;
 
     return no;
-};
+}
 
 //***************************************
 //  inserções
@@ -234,7 +236,7 @@ struct noArvoreB *insereArvoreB(struct noArvoreB **raiz, int elemento)
 
     //árvore aumentou de tamanho, a nova raiz é atualizada e a inserção é chamada novamente
     *raiz = arrumaBagunca;
-    insereArvoreB(raiz, elemento);
+    return insereArvoreB(raiz, elemento);
 }
 
 //***************************************
@@ -246,15 +248,8 @@ struct noArvoreB *insereArvoreB(struct noArvoreB **raiz, int elemento)
 //mostra o conteudo do nó
 void imprimeNoArvoreB(struct noArvoreB *no)
 {
-    int i;
     if(no == NULL) return;
-
-    printf("Inicio do No: \n");
-    for(i = 0; i < NUM_ELEMENTOS; i++)
-    {
-        printf("| Elem[%d] - %c |",i ,no->elementos[i]);
-    }
-    printf("\nFinal do No\n");
+    mostraConteudoNoArvoreB(no);
 }
 
 //mostra o conteudo da árvore
@@ -273,42 +268,33 @@ void imprimeArvoreB(struct noArvoreB **raiz)
 //mostra se existe conteudo em cada filho do nó
 void imprimeFilhosNoArvoreB(struct noArvoreB *no)
 {
-    int i;
     if(no == NULL) return;
-
-    printf("\nNo Filhos\n");
-    for(i = 0; i < NUM_FILHOS; i++)
-    {
-        printf("Filho[%d] - ",i );
-        if(no->filhos[i] != NULL) printf("NAO ");
-        printf("NULO\n");
-    }
+    mostraFilhosNoArvoreB(no);
 }
 
 //mostra se o nó é folha ou não
 void imprimeIsFolha(struct noArvoreB *no)
 {
     if(no == NULL) return;
-    if(no->folha) printf("\nNo Folha\n");
-    else printf("\nNo NAO Folha\n");
+    mostraNoFolhaArvoreB(no);
 }
 
 //retorna um booleano com a resposta se o nó é folha
 bool isFolha(struct noArvoreB *no)
 {
-    int i;
+    int index;
     if(no == NULL) return false;
 
-    for(i = 0; i < NUM_FILHOS; i++)
+    for(index = 0; index < NUM_FILHOS; index++)
     {
-        if(no->filhos[i] != NULL) return false;
+        if(no->filhos[index] != NULL) return false;
     }
     return true;
 }
 
 //cria uma nova arvoreB e alimenta com valores pre determinados
 //retorna o ponteiro p/ ponteiro da raiz
-struct noArvoreB **injetaValoresArvoreB()
+struct noArvoreB** injetaValoresArvoreB()
 {
     struct noArvoreB **r02 = iniciaRaizArvoreB();
 

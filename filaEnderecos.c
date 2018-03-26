@@ -1,4 +1,5 @@
 #include "filaEnderecos.h"
+#include "ui.h"
 
 //***************************************
 //  inicializações
@@ -49,8 +50,8 @@ void imprimeNoFilaEndereco(struct noFilaEndereco *no)
 {
     if(no == NULL) return;
 
-    printf("\nNo Lista Endereco: \n");
-    imprimeNoArvoreB(no);
+    informaTipoStruct_NoFilaEndereco();
+    imprimeNoArvoreB(no->enderecoNoArvore);
 }
 
 void imprimeFilaEndereco(struct filaEndereco *fila)
@@ -59,7 +60,7 @@ void imprimeFilaEndereco(struct filaEndereco *fila)
     if(fila->inicio == NULL) return;
 
     aux = fila->inicio;
-    printf("\nLISTA DE ENDERECOS\n");
+    informaTipoStruct_ListaEndereco();
     //percorre a fila
     while(aux != NULL)
     {
@@ -73,7 +74,6 @@ struct filaInfo *arvoreB_to_filaInfo(struct noArvoreB **raiz)
     struct filaInfo *fInfo;
     struct filaEndereco *fEndereco;
     struct noArvoreB *auxArvoreB;
-    struct noFilaInfo *auxInfo;
     struct noFilaEndereco *auxEndereco;
     int i;
     int elementos[NUM_ELEMENTOS];
@@ -114,14 +114,14 @@ struct filaInfo *arvoreB_to_filaInfo(struct noArvoreB **raiz)
         }
 
         //insere o nó na fila de informação para ser salvo
-        insereNoFilaInfoFinal(fInfo, &elementos, &indices, auxArvoreB->folha, auxArvoreB->numElementos);
+        insereNoFilaInfoFinal(fInfo, &(elementos[0]), &(indices[0]), auxArvoreB->folha, auxArvoreB->numElementos);
         auxEndereco = auxEndereco->prox;
     }
 
     return fInfo;
 }
 
-void noArquivo_salvarArvoreB(struct noArvoreB **raiz, char *nomeArquivo[])
+void noArquivo_salvarArvoreB(struct noArvoreB** raiz, char *nomeArquivo)
 {
     FILE *fp;
     struct noArquivo *auxArquivo;
@@ -129,7 +129,7 @@ void noArquivo_salvarArvoreB(struct noArvoreB **raiz, char *nomeArquivo[])
     struct noArvoreB *auxArvoreB;
     struct noFilaEndereco *auxEndereco;
     int i;
-    int chave[NUM_ELEMENTOS];
+    char chave[NUM_ELEMENTOS];
     int indice[NUM_FILHOS];
     int contagemIndice;
 
@@ -171,13 +171,13 @@ void noArquivo_salvarArvoreB(struct noArvoreB **raiz, char *nomeArquivo[])
             }
 
             //atribui valor ao nó que vai ser salvo e salva no arquivo
-            auxArquivo = iniciaNoArquivo(&chave, &indice, auxArvoreB->folha, auxArvoreB->numElementos);
-            imprimeNoArquivo(auxArquivo);
+            auxArquivo = iniciaNoArquivo(&(chave[0]), &(indice[0]), auxArvoreB->folha, auxArvoreB->numElementos);
+            //imprimeNoArquivo(auxArquivo);
             fwrite(auxArquivo, sizeof(struct noArquivo), 1, fp);
             //pega o próximo nó da árvore
             auxEndereco = auxEndereco->prox;
         }//while
         fclose(fp);
     }//abre arquivo
-    else printf("\nErro ao tentar abrir arquivo para salvar noArquivo\n");
+    else mensagemErro_filaEndereco_erroArquivo();
 }

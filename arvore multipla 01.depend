@@ -79,3 +79,65 @@
 1489305785 source:e:\documentos\2016\ed i\programas 2016\arvore multipla 01\trabalho2.c
 	"trabalho2.h"
 
+1522087488 source:e:\documentos\repositoriogit\arvore multipla\arvoreb.c
+	<stdlib.h>
+	"ui.h"
+	"arvoreB.h"
+
+1521998648 e:\documentos\repositoriogit\arvore multipla\arvoreb.h
+	"filaInfo.h"
+
+1522077050 e:\documentos\repositoriogit\arvore multipla\filainfo.h
+	"noArquivo.h"
+
+1522077420 e:\documentos\repositoriogit\arvore multipla\noarquivo.h
+	<stdio.h>
+	<stdlib.h>
+	<stdbool.h>
+
+1521997879 e:\documentos\repositoriogit\arvore multipla\constantes.h
+
+1522080464 source:e:\documentos\repositoriogit\arvore multipla\filaenderecos.c
+	"filaEnderecos.h"
+	"ui.h"
+
+1522076933 e:\documentos\repositoriogit\arvore multipla\filaenderecos.h
+	"arvoreB.h"
+
+1522080211 source:e:\documentos\repositoriogit\arvore multipla\filainfo.c
+	<stdlib.h>
+	"ui.h"
+	"filaInfo.h"
+
+1522086711 source:e:\documentos\repositoriogit\arvore multipla\main.c
+	<string.h>
+	"trabalho2.h"
+	"main.h"
+	"ui.h"
+
+1522090625 e:\documentos\repositoriogit\arvore multipla\trabalho2.h
+	"filaEnderecos.h"
+
+1522079984 source:e:\documentos\repositoriogit\arvore multipla\noarquivo.c
+	"noArquivo.h"
+	"ui.h"
+
+1522089867 source:e:\documentos\repositoriogit\arvore multipla\trabalho2.c
+	"trabalho2.h"
+
+1521997807 source:e:\documentos\repositoriogit\arvore multipla\constantes.c
+	"constantes.h"
+
+1522090336 source:e:\documentos\repositoriogit\arvore multipla\ui.c
+	<stdio.h>
+	<ctype.h>
+	"ui.h"
+
+1522090516 e:\documentos\repositoriogit\arvore multipla\ui.h
+	<stdbool.h>
+	"arvoreB.h"
+	"filaInfo.h"
+
+1522082461 e:\documentos\repositoriogit\arvore multipla\main.h
+	<stdbool.h>
+

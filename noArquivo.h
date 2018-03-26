@@ -1,3 +1,6 @@
+#ifndef __NOARQUIVO_H_
+#define __NOARQUIVO_H_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -14,8 +17,11 @@ typedef struct noArquivo{
 	//struct noArquivo *indice[NUM_FILHOS];
 } NO_B;
 
-struct noArquivo *iniciaNoArquivo(char *chaves[], int *indices[], bool folha, int nroChavesArm);
+struct noArquivo *iniciaNoArquivo(char *chaves, int *indices, bool folha, int nroChavesArm);
 void imprimeNoArquivo(struct noArquivo *no);
 void noArquivo_percorreArquivoInOrderChaves(FILE *fp, int indice);
-void noArquivo_percorreArquivoSequencial(char *nomeArquivo[]);
+void noArquivo_percorreArquivoSequencial(char *nomeArquivo);
 int noArquivo_buscaBinariaArquivo(FILE *fp, int chave, int indice);
+
+
+#endif // __NOARQUIVO_H_

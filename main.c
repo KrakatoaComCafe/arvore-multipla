@@ -1,5 +1,11 @@
-#include <time.h>
+//#include <time.h>
+//#include <stdbool.h>
+#include <string.h>
 #include "trabalho2.h"
+#include "main.h"
+#include "ui.h"
+
+#define ENCERRAR_PROGRAMA "Deseja encerrar o programa?\n"
 
 /**
     Para alterar o grau da árvore é necessário ir até o arquivo noArquivo.h e alterar o valor que segue a palavra defineda "GRAU".
@@ -35,39 +41,14 @@
 
 int main()
 {
-
-    int i;
-    struct noArvoreB **r01;
-
-    FILE *fp;
-    int opcao;
-    int chave;
-    bool arvoreGerada = false;
+    char opcao;
+    bool isArvoreGerada = false;
     char *nomeArquivo = NULL;
     do
     {
-        system("cls");
-        printf(">> Arvore Multipla com Grau %d (grau pode ser alterado em noArquivo.h)\n", GRAU);
-        printf(">> Numero de Elementos: %d\n", NUM_ELEMENTOS);
-        printf(">> Numero de Filhos:    %d\n", NUM_FILHOS);
-        printf(">> Nome do Arquivo: ");
-        if(nomeArquivo == NULL) printf("Nome ainda nao definido\n");
-        else printf("%s\n",nomeArquivo);
-        printf("\n\n");
-
-        printf("\nEscolha uma opcao: \n");
-        printf("[1] - Definir Nome do Arquivo: (necessario determinar extensao)\n");
-        printf("[2] - Mostrar Conteudo por Ordem de Insercao no Arquivo\n");
-        printf("[3] - Mostrar Elementos em Ordem Alfabetica\n");
-        printf("[4] - Buscar Elemento no Arquivo\n");
-        printf("[5] - Utilizar Busca por Indice\n");
-        if(arvoreGerada) printf("[X] - ArvoreB ja foi gerada com nome de arquivo arvoreMultipla.bab\n");
-        else printf("[9] - Gera e Salva Arvore B do ultimo slide de arvB-insercao-2.pdf da Aula 09\n");
-        printf("[Q] - Sair");
-
-        printf("\n\nSua escolha... ");
-        opcao = toupper(getchar());
-        printf("\n\n");
+        menuPrincipalHeader(nomeArquivo);
+        opcao = menuPrincipal(isArvoreGerada);
+        bool definido_nome_do_arquivo = nomeArquivo != NULL;
         switch(opcao)
         {
 
@@ -75,81 +56,91 @@ int main()
             opcao = 1;
             break;
         case '1': //pega o nome do arquivo digitado pelo usuário
-            nomeArquivo = (char*) malloc(100*sizeof(char));
-            printf("Digite o nome do arquivo: ");
-            scanf("%s", nomeArquivo);
+            resetaNomeDoArquivo(&nomeArquivo);
+            nomeArquivo = nomearArquivo();
             break;
         case '2': //mostra o conteudo do arquivo em formato de tabela
-            if(nomeArquivo != NULL)
+            if(definido_nome_do_arquivo)
             {
                 noArquivo_percorreArquivoSequencial(nomeArquivo);
             }
-            else printf("\n\n>>Nome do arquivo nao definido.");
-            printf("\n\n");
-            system("PAUSE");
+            else mensagemAlerta_nomeArquivo();
+            pausarExecucao();
             break;
         case '3': //mostra os elementos do arquivo em ordem alfabetica
-            if(nomeArquivo != NULL)
+            if(definido_nome_do_arquivo)
             {
-                fp = fopen(nomeArquivo,"rb");
-                if(fp != NULL)
-                {
-                    noArquivo_percorreArquivoInOrderChaves(fp, 0);
-                    fclose(fp);
-                }
-                else printf("\n\nErro ao abrir o arquivo!\n\n");
+                iniciaOrdemAlphabetica(nomeArquivo);
             }
-            else printf("\n\n>>Nome do arquivo nao definido.");
-            printf("\n\n");
-            system("PAUSE");
+            else mensagemAlerta_nomeArquivo();
+            pausarExecucao();
             break;
         case '4': //busca (em arquivo) a letra passada pelo usuário
-            if(nomeArquivo != NULL)
+            if(definido_nome_do_arquivo)
             {
-                printf("Digite a letra que deve ser procurada: ");
-                fflush(stdin);
-                chave = toupper(getchar());
+                int chave = retornaLetraParaBusca();
 
-                fp = fopen(nomeArquivo,"rb");
-                if(fp != NULL)
-                {
-                    chave = noArquivo_buscaBinariaArquivo(fp, chave, 0);
-                    if(chave == 0) printf("\nElemento nao encontrado");
-                    fclose(fp);
-                }
-                else printf("\n\nErro ao abrir o arquivo!\n\n");
+                iniciaBuscaBinaria(nomeArquivo, chave);
             }
-            printf("\n\n");
-            system("PAUSE");
+            else mensagemAlerta_nomeArquivo();
+            pausarExecucao();
             break;
         case '5': //utiliza busca de arquivo utilizando um arquivo indice
             nomeArquivo = menuTrabalho2();
             break;
         case '9':
-            if(!arvoreGerada)
+            if(!isArvoreGerada)
             {
-                r01 = injetaValoresArvoreB();
-                nomeArquivo = "arvoreMultipla.bab";
-                noArquivo_salvarArvoreB(r01,nomeArquivo);
-                //imprimeArvoreB(r01);
-                arvoreGerada = true;
-                printf("\n\n");
-                system("PAUSE");
+                isArvoreGerada = gerarArvoreB(&nomeArquivo);
             }
             break;
         case 'Q': //verifica se o usuário deseja sair
-            printf("Tem certeza que deseja sair? \n");
-            printf("[S] - Sim\n");
-            printf("[N] - Nao\n");
-            printf("\nSua escolha: ");
-            fflush(stdin);
-            opcao = toupper(getchar());
+            opcao = confirmacaoEncerramentoAtividade(ENCERRAR_PROGRAMA);
             break;
         }
     }while(opcao != 'S');
 
-
-
-    printf("\n\nHello world!\n");
     return 0;
+}
+
+//*********************************************
+void resetaNomeDoArquivo(char** nomeArquivo)
+{
+    free(*nomeArquivo);
+    *nomeArquivo = (char*) calloc(100, sizeof(char));
+}
+
+void iniciaOrdemAlphabetica(char* nomeArquivo)
+{
+    FILE* fp = fopen(nomeArquivo,"rb");
+    if(fp != NULL)
+    {
+        noArquivo_percorreArquivoInOrderChaves(fp, 0);
+        fclose(fp);
+    }
+    else mensagemErro_erroAbrirArquivo(__FILE__);
+}
+
+void iniciaBuscaBinaria(char* nomeArquivo, int chave)
+{
+    FILE* fp = fopen(nomeArquivo,"rb");
+    if(fp != NULL)
+    {
+        chave = noArquivo_buscaBinariaArquivo(fp, chave, 0);
+        if(chave == 0) mensagemAlerta_nomeArquivo();
+        fclose(fp);
+    }
+    else mensagemErro_erroBuscarArquivo(__FILE__);
+}
+
+bool gerarArvoreB(char** nomeArquivo)
+{
+    free(*nomeArquivo);
+    *nomeArquivo = (char*) calloc(100,sizeof(char));
+    struct noArvoreB** raiz = injetaValoresArvoreB();
+    //imprimeArvoreB(raiz);
+    strcpy(*nomeArquivo, "arvoreMultipla.bab");
+    noArquivo_salvarArvoreB(raiz,*nomeArquivo);
+
+    return true;
 }

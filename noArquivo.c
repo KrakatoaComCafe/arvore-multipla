@@ -1,9 +1,10 @@
 #include "noArquivo.h"
+#include "ui.h"
 
 //***************************************
 //  inicializações
 
-struct noArquivo *iniciaNoArquivo(char *chaves[], int *indices[], bool folha, int nroChavesArm)
+struct noArquivo *iniciaNoArquivo(char *chaves, int *indices, bool folha, int nroChavesArm)
 {
     int i;
     struct noArquivo *no = (struct noArquivo*) malloc(sizeof(struct noArquivo));
@@ -31,49 +32,36 @@ struct noArquivo *iniciaNoArquivo(char *chaves[], int *indices[], bool folha, in
 
 void imprimeNoArquivo(struct noArquivo *no)
 {
-    int i;
     if(no == NULL) return;
-
-    printf("No Arquivo: \n");
-    printf("NumChavesArm - %d\n", no->nroChavesArm);
-    for(i = 0; i < NUM_ELEMENTOS; i++)
-    {
-        printf("Elemento[%d] - %c\n", i, no->chave[i]);
-    }
-    for(i = 0; i < NUM_FILHOS; i++)
-    {
-        printf("Indice[%d] - %d\n",i, no->indice[i]);
-    }
-    printf("Folha - ");
-    if(no->folha) printf("SIM");
-    else printf("NAO");
-    printf("\n\n");
+    mostraNoArquivo(no);
 }
 
 //passa (em arquivo) pela lógica In Order mostrando somente as chaves em ordem alfabetica
 void noArquivo_percorreArquivoInOrderChaves(FILE *fp, int indice)
 {
-    int i;
+    int index;
     int nbytes;
     struct noArquivo aux;
     fseek(fp, indice * sizeof(struct noArquivo), SEEK_SET);
     nbytes = fread(&aux, sizeof(struct noArquivo), 1, fp);
     if(nbytes != 0)
     {
-        for(i = 0 ; i < NUM_FILHOS; i++)
+        for(index = 0 ; index < NUM_FILHOS; index++)
         {
-            if(aux.indice[i] != 0) noArquivo_percorreArquivoInOrderChaves(fp, aux.indice[i]);
+            if(aux.indice[index] != 0) noArquivo_percorreArquivoInOrderChaves(fp, aux.indice[index]);
 
-            if(i < NUM_ELEMENTOS && aux.chave[i] >= 'A' && aux.chave[i] <= 'Z') printf("%c", aux.chave[i]);
+            bool dentro_do_no = index < NUM_ELEMENTOS;
+            bool chave_eh_uma_letra = aux.chave[index] >= 'A' && aux.chave[index] <= 'Z';
+
+            if(dentro_do_no && chave_eh_uma_letra) mostraChave(aux.chave[index]);;
         }
     }
 }
 
 //percorre todos os nós da árvore (pré inseridos em ordem de nível)
-void noArquivo_percorreArquivoSequencial(char *nomeArquivo[])
+void noArquivo_percorreArquivoSequencial(char *nomeArquivo)
 {
     FILE *fp;
-    int i;
     int indice;
     int nbytes;
     struct noArquivo aux;
@@ -81,7 +69,7 @@ void noArquivo_percorreArquivoSequencial(char *nomeArquivo[])
     fp = fopen(nomeArquivo,"rb");
     if(fp != NULL)
     {
-        printf("> | Indice | NumChaves | Folha |  Chaves |   Indices   |\n");
+        leituraDeArquivo_header();
         nbytes = 1; //atribui um valor pra passar pelo primeiro for
         for(indice = 0; nbytes != 0; indice++)
         {
@@ -89,27 +77,13 @@ void noArquivo_percorreArquivoSequencial(char *nomeArquivo[])
             nbytes = fread(&aux, sizeof(struct noArquivo), 1, fp);
             if(nbytes != 0)
             {
-                printf("> |   %2d   |     %d     |", indice, aux.nroChavesArm);
-                printf("  ");
-                if(aux.folha) printf("SIM");
-                else printf("NAO");
-                printf("  |  ");
-                for(i = 0; i < NUM_ELEMENTOS; i++)
-                {
-                    printf("%c ",aux.chave[i]);
-                }
-                printf(" | ");
-                for(i = 0; i < NUM_FILHOS; i++)
-                {
-                    printf("%2d ", aux.indice[i]);
-                }
-                printf("| \n");
+                leituraDeArquivo_corpo(indice, aux.nroChavesArm, aux.chave, aux.indice, aux.folha);
             }
         }
 
         fclose(fp);
     }
-    else printf("\nNAO VAI DAR NAO! NAO ABRIU O ARQUIVO!\n");
+    else mensagemErro_erroAbrirArquivo(__FILE__);
 
 }
 
@@ -130,7 +104,7 @@ int noArquivo_buscaBinariaArquivo(FILE *fp, int chave, int indice)
             {
                 if(aux.chave[i] == chave)
                 {
-                    printf("\nElemento %c Encontrado - No identificado pelo indice[%d]\n", aux.chave[i], indice);
+                    mostrarElementoEPosicao(aux.chave[i], indice);
                     return 1;
                 }
             }
@@ -144,5 +118,7 @@ int noArquivo_buscaBinariaArquivo(FILE *fp, int chave, int indice)
         }
         else return 0;
     }
-    else printf("\nDEU MERDA NA BUSCA\n");
+    else mensagemErro_erroBuscarArquivo(__FILE__);
+
+    return (int)NULL;
 }

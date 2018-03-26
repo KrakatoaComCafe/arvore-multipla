@@ -1,4 +1,8 @@
+#include <string.h>
 #include "trabalho2.h"
+#include "ui.h"
+
+#define MENU_ANTERIOR "Deseja voltar para o menu anterio?\n"
 
 /**
         Este arquivo e trabalho2.h são tem a função de utilizar um arquivo que contém uma ou várias raizes de diferentes
@@ -39,34 +43,11 @@ char* menuTrabalho2()
 
     do
     {
-        /*
-            topo de menu
-        */
-        system("cls");
-        printf(">> Nome do arquivo de indices selecionado: ");
-        if(nomeArquivo == NULL) printf("Arquivo ainda nao definido\n");
-        else printf("%s\n", nomeArquivo);
-        printf(">> Nome do arquivo da raiz selecionada:    ");
-        if(raizArquivo == NULL) printf("Arquivo contendo arvore ainda nao selecionado\n");
-        else printf("%s\n", raizArquivo);
-        printf("\n\n");
-
+        trabalho2_menuPrincipalHeader(nomeArquivo, raizArquivo);
         /*
             opções do menus
         */
-        printf("\nEscolha uma opcao: \n");
-        printf("[1] - Definir nome do arquivo Indice: (necessario determinar extensao)\n");
-        if(nomeArquivo) printf("[2] - Buscar as raizes no arquivo de indices\n");
-        if(raizArquivo) printf("[3] - Abrir arquivo contendo a raiz selecionada\n");
-        if(indiceGerado)
-            printf("[X] - Indice ja gerado com o nome indiceRaizes.inb\n");
-        else
-            printf("[9] - Gerar arquivo indice utilizando a raiz do arquivo arvoreMultipla.bab\n");
-        printf("[Q] - Sair");
-
-        printf("\n\nSua escolha... ");
-        opcao = toupper(getchar());
-        printf("\n\n");
+        opcao = trabalho2_menuPrincipal(nomeArquivo, raizArquivo, indiceGerado);
 
         switch(opcao)
         {
@@ -74,9 +55,7 @@ char* menuTrabalho2()
             opcao = 1;
             break;
         case '1': //armazena o nome do arquivo digitado pelo usuário
-            nomeArquivo = (char *) malloc(100*sizeof(char));
-            printf("Digite o nome do arquivo: ");
-            scanf("%s", nomeArquivo);
+            nomeArquivo = nomearArquivo();
             break;
         case '2': //mostra as raizes dentro do arquivo indice
             if(nomeArquivo)
@@ -95,15 +74,12 @@ char* menuTrabalho2()
             }
             break;
         case 'Q': //verifica se o usuário deseja voltar
-            printf("Tem certeza que deseja voltar? \n");
-            printf("[S] - Sim \n");
-            printf("[N] - Nao \n");
-            printf("\nSua escolha: ");
-            fflush(stdin);
-            opcao = toupper(getchar());
+            opcao = confirmacaoEncerramentoAtividade(MENU_ANTERIOR);
             break;
         }
     }while(opcao != 'S');
+
+    return raizArquivo;
 }
 
 /*
@@ -140,7 +116,6 @@ void gerarIndice()
                 auxIndice.raiz.indice[i] = auxArquivo.indice[i];
             }
             auxIndice.raiz.indice[i] = auxArquivo.indice[i];
-
             strcpy(auxIndice.nomeArquivo, "arvoreMultipla.bab");
 
             //escreve a raiz no arquivo indice
@@ -148,87 +123,53 @@ void gerarIndice()
         }
 
         fclose(fpIndiceTrabalho2);
-        fclose(fpArvoreTrabalho1);
     }
-    else
-    {
-        printf("\nUM ERRO INESPERADO! SOFRA!\n");
-        return;
-    }
+    else mensagemErro_erroAbrirArquivo(__FILE__);
+
+    fclose(fpArvoreTrabalho1);
 }
 
 /*
         Percorre o arquivo indice e mostra as informações de cada raiz
     juntamente com uma opção para seleção da razi desejada.
 */
-char* indice_percorreArquivoSequencial(char *nomeArquivo[]) //nomeArquivo é o nome do arquivo que carrega os indices para os arquivos com arvores
+char* indice_percorreArquivoSequencial(char *nomeArquivo) //nomeArquivo é o nome do arquivo que carrega os indices para os arquivos com arvores
 {
-    FILE *fp;
-    int opcao;
-    int i;
-    int indice;
-    int nbytes;
-    struct noIndice aux;
+    FILE* fp;
     char *nomeArquivoRaiz = NULL; //armazena o nome do arquivo que contem a raiz selecionada
 
     fp = fopen(nomeArquivo, "rb");
     if(fp != NULL)
     {
+        char opcao;
         do
         {
-            /*
-                topo de menu
-            */
-            system("cls");
-            printf("Escolha uma das opcoes abaixo: \n\n");
-
-            /*
-                opções do menu
-            */
-            printf(" Opcoes | NumChaves | Folha |  Chaves |   Indices   |\n");
+            trabalho2_menuIndicesHeader();
+            leituraDeArquivo_header();
             //atribui valor ao nbytes para passar pela primeira checagem do "for"
-            nbytes = 1;
-            //percorre o arquivo em ordem sequencial e mostra eles na tela
+            int nbytes = 1;
+            int indice;
             for(indice = 0; nbytes != 0; indice++)
             {
+                struct noIndice aux;
                 //recupera um nó do arquivo
                 fseek(fp, indice *sizeof(struct noIndice), SEEK_SET);
                 nbytes = fread(&aux, sizeof(struct noIndice), 1, fp);
                 if(nbytes != 0)
                 {
-                    //o monstro de printenstein para exibir o conteudo do nó e as opções para cada
-                    printf("  [%2d]  |     %d     |", indice+1, aux.raiz.nroChavesArm);
-                    printf("  ");
-                    if(aux.raiz.folha) printf("SIM");
-                    else printf("NAO");
-                    printf("  |  ");
-                    for(i = 0; i < NUM_ELEMENTOS; i++)
-                    {
-                        printf("%c ",aux.raiz.chave[i]);
-                    }
-                    printf(" | ");
-                    for(i = 0; i < NUM_FILHOS; i++)
-                    {
-                        printf("%2d ", aux.raiz.indice[i]);
-                    }
-                    printf("| \n");
-                }//if
-            }//for
-            printf("  [Q] - Voltar\n");
+                    leituraDeArquivo_corpo((indice + 1), aux.raiz.nroChavesArm, aux.raiz.chave, aux.raiz.indice, aux.raiz.folha);
 
-            printf("\n\nSua escolha... ");
-            opcao = toupper(getchar());
-            printf("\n\n");
+                }
+            }
+            opcao = trabalho2_menuIndiceContinuacao();
 
             /*
                 Ações das possiveis escolhas
             */
-            //Caso seja escolhida uma das possiveis raizes dentro das disponiveis
-            //(depende da quantidade de raizes no arquivo indice)
-            if(opcao > '0' && opcao <= (indice+48)) //48 é o valor 0 na tabela ASCII
-            {
-                //exibe a opção escolhida e espera a confirmação do usuário
+            bool escolheu_uma_das_raizes = opcao > '0' && opcao <= (indice + '0'); //48 é o valor 0 na tabela ASCII
+            if(escolheu_uma_das_raizes) {
                 nomeArquivoRaiz = confirmaEscolhaArquivoNoRaiz(fp, opcao);
+                fclose(fp);
                 return nomeArquivoRaiz;
             }
 
@@ -237,17 +178,12 @@ char* indice_percorreArquivoSequencial(char *nomeArquivo[]) //nomeArquivo é o no
             case 'S': //tecla S(que finaliza o programa) é trocada de valor se for apertado agora
                 opcao = 1;
                 break;
-            case 'Q': //opção para sair da tela
-                fflush(stdin);
-                printf("Deseja retornar a tela anterior? \n");
-                printf("[S] - Sim\n");
-                printf("[N] - Nao\n");
-                printf("\n\nSua escolha... ");
-                opcao = toupper(getchar());
-                printf("\n\n");
+            case 'Q':
+                opcao = confirmacaoEncerramentoAtividade(MENU_ANTERIOR);
             }
         }while(opcao != 'S');
     }//if(fp != NULL)
+    fclose(fp);
     return nomeArquivoRaiz;
 }
 
@@ -258,56 +194,26 @@ char* indice_percorreArquivoSequencial(char *nomeArquivo[]) //nomeArquivo é o no
 char* confirmaEscolhaArquivoNoRaiz(FILE *fp, int opcao)
 {
     struct noIndice aux;
-    int nbytes;
-    int i;
     char *nomeArquivoRaiz;
 
     //passa o arquivo para a posição do nó selecionado
     rewind(fp);
     fseek(fp, (opcao-49) *sizeof(struct noIndice), SEEK_SET);
-    nbytes = fread(&aux, sizeof(struct noIndice), 1, fp);
+    /*int nbytes = */fread(&aux, sizeof(struct noIndice), 1, fp);
 
     //mostra o nó na tela e espera input do usuário
     do
     {
-        system("cls");
-        printf("");
-        printf(" NumChaves | Folha |  Chaves |   Indices   |\n");
-        printf("     %d     |", aux.raiz.nroChavesArm);
-        printf("  ");
-        if(aux.raiz.folha) printf("SIM");
-        else printf("NAO");
-        printf("  |  ");
-        for(i = 0; i < NUM_ELEMENTOS; i++)
-        {
-            printf("%c ",aux.raiz.chave[i]);
-        }
-        printf(" | ");
-        for(i = 0; i < NUM_FILHOS; i++)
-        {
-            printf("%2d ", aux.raiz.indice[i]);
-        }
-        printf("| \n");
+        raizEscolhida_header();
+        raizEscolhida_upperBody(aux.raiz.nroChavesArm, &aux.raiz.folha, &(aux.raiz.chave[0]), &(aux.raiz.indice[0]));
+        opcao = raizEscolhida_lowerBody(aux.nomeArquivo);
 
-        //confirmação se este é o nó
-        printf("\n\n");
-        printf("Este é a raiz que voce escolheu?\n");
-        printf("[S] - Sim\n");
-        printf("[N] - Nao\n");
-
-        printf(">>Sua resposta: ");
-        fflush(stdin);
-        opcao = toupper(getchar());
-        printf("\n\n");
-        printf("\n%s", aux.nomeArquivo);
     }
     while( (opcao != 'S') && (opcao != 'N'));
 
-    if(opcao == 'S')
-    {
+    if(opcao == 'S'){
         //passa o nome do arquivo para o ponteiro e retorna o ponteiro
-        nomeArquivoRaiz = (char*) malloc(100*sizeof(char));
-        strcpy(nomeArquivoRaiz, aux.nomeArquivo);
+        insereValorNaString(&nomeArquivoRaiz, &(aux.nomeArquivo[0]));
         return nomeArquivoRaiz;
     }
     else return NULL;

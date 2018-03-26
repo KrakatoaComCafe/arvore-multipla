@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include "ui.h"
 #include "filaInfo.h"
 
 //***************************************
@@ -12,18 +14,18 @@ struct filaInfo *iniciaFilaInfo()
     return novaFila;
 }
 
-struct noFilaInfo *iniciaNoFilaInfo(int *elementos[], int *indices[], bool folha, int numChavesArm)
+struct noFilaInfo *iniciaNoFilaInfo(int *elementos, int *indices, bool folha, int numChavesArm)
 {
     int i;
     struct noFilaInfo *no = (struct noFilaInfo*) malloc(sizeof(struct noFilaInfo));
 
     for(i = 0; i < NUM_ELEMENTOS; i++)
     {
-        no->elementos[i] = elementos[i];
-        no->indices[i] = indices[i];
+        no->elementos[i] = (int)elementos[i];
+        no->indices[i] = (int)indices[i];
     }
     no->numChavesArm = numChavesArm;
-    no->indices[i] = indices[i];
+    no->indices[i] = (int)indices[i];
     no->folha = folha;
     no->prox = NULL;
 
@@ -33,7 +35,7 @@ struct noFilaInfo *iniciaNoFilaInfo(int *elementos[], int *indices[], bool folha
 //***************************************
 //  inserções
 
-void insereNoFilaInfoFinal(struct filaInfo *f, int *elementos[], int *indices[], bool folha, int numChavesArm)
+void insereNoFilaInfoFinal(struct filaInfo *f, int *elementos, int *indices, bool folha, int numChavesArm)
 {
     struct noFilaInfo *novo = iniciaNoFilaInfo(elementos, indices, folha, numChavesArm);
     if(f->inicio == NULL)
@@ -69,23 +71,8 @@ void insereNoFilaInfoFinalStruct(struct filaInfo *fila, struct noFilaInfo *novoN
 //mostra todo o conteudo da do nó da fila
 void imprimeNoFilaInfo(struct noFilaInfo *no)
 {
-    int i;
     if(no == NULL) return;
-
-    printf("No Fila: \n");
-    printf("NumChavesArm - %d\n", no->numChavesArm);
-    for(i = 0; i < NUM_ELEMENTOS; i++)
-    {
-        printf("Elemento[%d] - %c\n", i, no->elementos[i]);
-    }
-    for(i = 0; i < NUM_FILHOS; i++)
-    {
-        printf("Indice[%d] - %d\n",i, no->indices[i]);
-    }
-    printf("Folha - ");
-    if(no->folha) printf("SIM");
-    else printf("NAO");
-    printf("\n\n");
+    mostraNoFilaInfo(no);
 }
 
 //mostra todo o conteudo da fila
@@ -123,7 +110,7 @@ void salvaArquivo(struct filaInfo *fila)
 
         fclose(fp);
     }
-    else printf("\nDEU MERDA NA HORA DE SALVAR\n");
+    else mensagemErro_filaInfo_erroSalvarArquivo();
 }
 
 //percorre a árvore em arquivo, mostrando os elementos em ordem alfabetica
@@ -148,7 +135,6 @@ void percorreArquivoInOrderElementos(FILE *fp, int indice)
 void percorreArquivoSequencial()
 {
     FILE *fp;
-    int i;
     int indice;
     int nbytes;
     struct noFilaInfo aux;
@@ -156,7 +142,7 @@ void percorreArquivoSequencial()
     fp = fopen("arvoreMultipla.bab","rb");
     if(fp != NULL)
     {
-        printf("> | Indice | NumChaves | Folha |  Chaves |   Indices   |\n");
+        leituraDeArquivo_header();
         nbytes = 1; //atribui um valor pra passar pelo primeiro for
         for(indice = 0; nbytes != 0; indice++)
         {
@@ -164,27 +150,15 @@ void percorreArquivoSequencial()
             nbytes = fread(&aux, sizeof(struct noFilaInfo), 1, fp);
             if(nbytes != 0)
             {
-                printf("> |   %2d   |     %d     |", indice, aux.numChavesArm);
-                printf("  ");
-                if(aux.folha) printf("SIM");
-                else printf("NAO");
-                printf("  |  ");
-                for(i = 0; i < NUM_ELEMENTOS; i++)
-                {
-                    printf("%c ",aux.elementos[i]);
-                }
-                printf(" | ");
-                for(i = 0; i < NUM_FILHOS; i++)
-                {
-                    printf("%2d ", aux.indices[i]);
-                }
-                printf("| \n");
+                char* charArray = (char*)aux.elementos;
+                leituraDeArquivo_corpo(indice, aux.numChavesArm, charArray, aux.indices, aux.folha);
+                //leituraDeArquivo_corpo_noFilaInfo(indice, &aux);
             }
         }
 
         fclose(fp);
     }
-    else printf("\nNAO VAI DAR NAO! NAO ABRIU O ARQUIVO!\n");
+    else mensagemErro_erroAbrirArquivo(__FILE__);
 
 }
 
@@ -205,7 +179,8 @@ int buscaBinariaArquivo(FILE *fp, int chave, int indice)
             {
                 if(aux.elementos[i] == chave)
                 {
-                    printf("\nElemento %c Encontrado - No identificado pelo indice[%d]\n", aux.elementos[i], indice);
+                    mostrarElementoEPosicao(aux.elementos[i], indice);
+                    //printf("\nElemento %c Encontrado - No identificado pelo indice[%d]\n", aux.elementos[i], indice);
                     return 1;
                 }
             }
@@ -219,5 +194,7 @@ int buscaBinariaArquivo(FILE *fp, int chave, int indice)
         }
         else return 0;
     }
-    else printf("\nDEU MERDA NA BUSCA\n");
+    else mensagemErro_erroBuscarArquivo(__FILE__);
+
+    return (int)NULL;
 }

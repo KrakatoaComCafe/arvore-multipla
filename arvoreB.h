@@ -1,3 +1,6 @@
+#ifndef __ARVOREB_H_
+#define __ARVOREB_H_
+
 #include "filaInfo.h"
 
 struct noArvoreB
@@ -21,3 +24,6 @@ void imprimeFilhosNoArvoreB(struct noArvoreB *no);
 void imprimeIsFolha(struct noArvoreB *no);
 bool isFolha(struct noArvoreB *no);
 struct noArvoreB **injetaValoresArvoreB();
+
+
+#endif // __ARVOREB_H_
