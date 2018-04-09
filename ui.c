@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ctype.h>
+#include <string.h>
 #include "ui.h"
 
 //#include <stdbool.h>
@@ -50,7 +51,7 @@ char confirmacaoEncerramentoAtividade(char* aviso)
 void menuPrincipalHeader(char* nomeArquivo)
 {
     system("cls");
-    printf(">> Arvore Multipla com Grau %d (grau pode ser alterado em noArquivo.h)\n", GRAU);
+    printf(">> Arvore Multipla com Grau %d\n", GRAU);
     printf(">> Numero de Elementos: %d\n", NUM_ELEMENTOS);
     printf(">> Numero de Filhos:    %d\n", NUM_FILHOS);
     printf(">> Nome do Arquivo: ");
@@ -68,7 +69,7 @@ char menuPrincipal(bool isArvoreGerada)
     printf("[4] - Buscar Elemento no Arquivo\n");
     printf("[5] - Utilizar Busca por Indice\n");
     if(isArvoreGerada) printf("[X] - ArvoreB ja foi gerada com nome de arquivo arvoreMultipla.bab\n");
-    else printf("[9] - Gera e Salva Arvore B mostrada na imagem img_arvoreB.jpg\n");
+    else printf("[9] - Gera e Salva Arvore B mostrada na imagem img_arvore.gif\n");
     printf("[Q] - Sair");
 
     printf("\n\nSua escolha... ");

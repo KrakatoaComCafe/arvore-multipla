@@ -122,15 +122,18 @@
 	"noArquivo.h"
 	"ui.h"
 
-1522089867 source:e:\documentos\repositoriogit\arvore multipla\trabalho2.c
+1522091094 source:e:\documentos\repositoriogit\arvore multipla\trabalho2.c
+	<string.h>
 	"trabalho2.h"
+	"ui.h"
 
 1521997807 source:e:\documentos\repositoriogit\arvore multipla\constantes.c
 	"constantes.h"
 
-1522090336 source:e:\documentos\repositoriogit\arvore multipla\ui.c
+1523256443 source:e:\documentos\repositoriogit\arvore multipla\ui.c
 	<stdio.h>
 	<ctype.h>
+	<string.h>
 	"ui.h"
 
 1522090516 e:\documentos\repositoriogit\arvore multipla\ui.h
